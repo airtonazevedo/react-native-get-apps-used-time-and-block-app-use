@@ -50,7 +50,7 @@ const App = () => {
   const [apps, setApps] = useState<AppInfo[]>([])
   const [loading, setLoading] = useState(false);
   const [blocked, setBlocked] = useState<string[]>([])
-
+  const [serviceStarted, setServiceStarted] = useState(false)
   const handleGetApps = useCallback(async () => {
     setLoading(true);
 
@@ -71,6 +71,7 @@ const App = () => {
 
   useEffect(() => {
     //BackgroundFetchConfig();
+    //  BlockApp.startBlockService();
   }, [])
 
   useEffect(() => {
@@ -83,6 +84,12 @@ const App = () => {
 
   const handleBlockApp = (app: string) => {
     setBlocked([...blocked, app])
+  }
+
+
+  const handleStartService = () => {
+    BlockApp.startBlockService();
+    setServiceStarted(true)
   }
 
   const handleUnBlockApp = (app: string) => {
@@ -100,6 +107,7 @@ const App = () => {
       <BGLocation enable={false}></BGLocation>
 
       <SafeAreaView>
+        <Button disabled={serviceStarted} onPress={handleStartService} title={"Bloquear app da azul"} />
         <Button disabled={loading || true} onPress={handleGetApps} title={"Ver apps"} />
 
         {

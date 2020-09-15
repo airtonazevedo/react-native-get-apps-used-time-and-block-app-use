@@ -56,7 +56,12 @@ public class BlockAppsModule extends ReactContextBaseJavaModule {
         List<UsageStats> usageStatsList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime);
         return usageStatsList;
     }
+    
 
+    @ReactMethod
+    public void startBlockService() {
+        reactContext.startService(new Intent(reactContext, TaskService.class));
+    }
     @ReactMethod
     public void blockApp(ReadableArray currentPackage) {
         try {

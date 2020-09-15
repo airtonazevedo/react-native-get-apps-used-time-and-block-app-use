@@ -53,7 +53,9 @@ public class TaskService extends Service {
       String currentPackage = "br.com.voeazul";
       //BlockAppsModule.blockApp(currentPackage);
       Context reactContext = this;
-
+      if (BlockAppsModule.getUsageStatsList(this).isEmpty()){
+        return 0;
+      }
       try {
         //Log.d("ReactNativeBleManager", "one");
         final int counter = 0;
@@ -82,16 +84,12 @@ public class TaskService extends Service {
                         && !packageName.equals(reactContext.getPackageName())) {
 
                     if (packageName.equals(currentPackage)) {
-                        // Log.d("ReactNativeBleManager", "packageNameDestroy");
-                        //Intent launchIntent = pm.getLaunchIntentForPackage("com.rnnativebockapps");
-                        // if (launchIntent != null) {
-                        //   reactContext.startActivity(launchIntent);//null pointer check in case package name was not found
-                        //}
+                        
                         Uri uri = Uri.parse("app://domus/shared/");
                         Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
+                        likeIng.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         likeIng.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        //likeIng.setPackage("com.rnnativebockapps");
-                        
+                         
                         startActivity(likeIng);
 
                     }

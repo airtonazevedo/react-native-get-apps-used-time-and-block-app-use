@@ -47,7 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        startService(new Intent(this, TaskService.class));
+        //startService(new Intent(this, TaskService.class));
         SoLoader.init(this, /* native exopackage */ false);
         initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     }

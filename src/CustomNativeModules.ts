@@ -3,6 +3,7 @@ import { NativeModules } from 'react-native';
 interface BlockApp {
   blockApp: (packageNames: string[]) => void
   blockOneApp: (packageNames: string) => void
+  startBlockService: () => void
 
 }
 
