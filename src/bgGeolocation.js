@@ -42,7 +42,12 @@ const BgTracking = (props) => {
       BackgroundGeolocation.startTask(taskKey => {
         // execute long running task
         // eg. ajax post location
-
+        /*
+        fetch('http://192.168.15.11:3333/test')
+          .then(function (response) {
+            console.log('startTask');
+          })
+          */
         // IMPORTANT: task has to be ended by endTask
         BackgroundGeolocation.endTask(taskKey);
       });

@@ -28,6 +28,7 @@ import moment from 'moment'
 import { AppInfo, BlockApp, GetApps } from './CustomNativeModules';
 import 'moment/locale/pt-br';
 import BGLocation from './bgGeolocation'
+import { BackgroundFetchConfig } from './Task';
 
 moment.updateLocale('pt-br', {
   calendar: {
@@ -69,8 +70,14 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    if (blocked.length)
+    //BackgroundFetchConfig();
+  }, [])
+
+  useEffect(() => {
+    if (blocked.length) {
       BlockApp.blockApp(blocked);
+      AsyncStorage.setItem('@BlockedApps', JSON.stringify(blocked));
+    }
 
   }, [blocked])
 
@@ -90,10 +97,10 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <BGLocation enable={true}></BGLocation>
+      <BGLocation enable={false}></BGLocation>
 
       <SafeAreaView>
-        <Button disabled={loading} onPress={handleGetApps} title={"Ver apps"} />
+        <Button disabled={loading || true} onPress={handleGetApps} title={"Ver apps"} />
 
         {
           loading == true && <ActivityIndicator color={'#1212dd'} />

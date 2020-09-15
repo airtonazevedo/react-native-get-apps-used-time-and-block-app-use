@@ -8,7 +8,6 @@
  * @format
  */
 
-import 'react-native-gesture-handler';
 import * as React from 'react';
 import { NavigationContainer, NavigationContainerRef, useLinking } from '@react-navigation/native';
 import moment from 'moment'

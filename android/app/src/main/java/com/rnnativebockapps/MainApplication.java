@@ -2,6 +2,7 @@ package com.rnnativebockapps;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -46,6 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        startService(new Intent(this, TaskService.class));
         SoLoader.init(this, /* native exopackage */ false);
         initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     }
