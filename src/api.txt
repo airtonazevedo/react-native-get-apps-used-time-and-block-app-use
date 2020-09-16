@@ -1,0 +1,32 @@
+Tabela:
+export interface AppInfo {
+  kidId: number,
+  apkDir: string,
+  appName: string,
+  appUsageTime: number, //milisegundos
+  allowedUsedTime: number // 0 app permitido | < 0 app bloqueado | > 0 tempo de uso semanal em milisegundos 
+  firstInstallTime: number,
+  icon: string // base64,
+  lastUpdateTime: number,
+  packageName: string, // unico
+  size: number,
+  versionCode: number,
+  versionName: string
+}
+
+kids 
+POST appinfo - data: AppInfo[] (sem kidId e allowedUsedTime)
+ - Envio um array com os apps do filho, caso o packageName ja esteja cadastrado atualiza, caso não esteja cadastra o app para o filho.
+ retorna um array com {id, packageName, allowedUsedTime} de todos os apps, caso o app tenha acabado de ser cadastrado o allowedUsedTime deve ser 0
+
+PUT ou PATH appinfo - data {id, appUsageTime}[]
+ - Envio um array para atualizar o tempo de uso de cada app do filho. (remover os apps que não foram enviados no put)
+  retorna um array com {id, packageName, allowedUsedTime} de todos os apps.
+
+parents
+
+GET appinfo/:kidId
+ - Retorna todos os apps do filho
+
+PUT ou PATH appinfo/:kidId - data: {id, allowedUsedTime}[] 
+ - Envio um array com o id do app e o allowedUsedTime e atualiza no bd 

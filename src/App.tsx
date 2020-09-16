@@ -51,6 +51,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [blocked, setBlocked] = useState<string[]>([])
   const [serviceStarted, setServiceStarted] = useState(false)
+
   const handleGetApps = useCallback(async () => {
     setLoading(true);
 
@@ -70,26 +71,30 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    //BackgroundFetchConfig();
-    //  BlockApp.startBlockService();
+    const getBlockedApps = async () => {
+      setLoading(true)
+      const itens = await AsyncStorage.getItem('@BlockedApps');
+      if (itens) {
+        setBlocked(JSON.parse(itens));
+      }
+      setLoading(false);
+    }
+    getBlockedApps();
   }, [])
 
   useEffect(() => {
-    if (blocked.length) {
-      BlockApp.blockApp(blocked);
-      AsyncStorage.setItem('@BlockedApps', JSON.stringify(blocked));
-    }
+    const changeBlockedApps = async () => {
 
+      if (blocked.length) {
+        await AsyncStorage.setItem('@BlockedApps', JSON.stringify(blocked));
+      }
+      BlockApp.startBlockService();
+    }
+    changeBlockedApps();
   }, [blocked])
 
   const handleBlockApp = (app: string) => {
     setBlocked([...blocked, app])
-  }
-
-
-  const handleStartService = () => {
-    BlockApp.startBlockService();
-    setServiceStarted(true)
   }
 
   const handleUnBlockApp = (app: string) => {
@@ -107,8 +112,7 @@ const App = () => {
       <BGLocation enable={false}></BGLocation>
 
       <SafeAreaView>
-        <Button disabled={serviceStarted} onPress={handleStartService} title={"Bloquear app da azul"} />
-        <Button disabled={loading || true} onPress={handleGetApps} title={"Ver apps"} />
+        <Button disabled={loading} onPress={handleGetApps} title={"Ver apps"} />
 
         {
           loading == true && <ActivityIndicator color={'#1212dd'} />

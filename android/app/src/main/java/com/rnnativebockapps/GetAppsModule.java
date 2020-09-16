@@ -59,8 +59,7 @@ public class GetAppsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getNonSystemApps(Promise promise) {
         try {
-            Log.d("ReactNativeBleManager", "Chega aqui meu papi");
-
+          
             PackageManager pm = this.reactContext.getPackageManager();
             List<PackageInfo> pList = pm.getInstalledPackages(0);
             WritableArray list = Arguments.createArray();

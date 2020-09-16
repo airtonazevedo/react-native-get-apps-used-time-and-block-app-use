@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
+import android.provider.Settings;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -26,6 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
 import java.util.Objects;
+
+import com.facebook.react.modules.storage.AsyncLocalStorageUtil;
+import com.facebook.react.modules.storage.ReactDatabaseSupplier;
+import android.database.sqlite.SQLiteDatabase;
+
+import org.json.JSONArray;
 
 import com.rvalerio.fgchecker.AppChecker;
 
@@ -50,9 +57,41 @@ public class TaskService extends Service {
   @Override
   public int onStartCommand(Intent intent, int flags, int startId){
       // do your jobs here
+
+      List<String> listPackages = new ArrayList<String>();
+              
+      SQLiteDatabase readableDatabase = null;
+      readableDatabase = ReactDatabaseSupplier.getInstance(this).getReadableDatabase();
+      if (readableDatabase != null) {
+            try {
+                String JSONPackages = AsyncLocalStorageUtil.getItemImpl(readableDatabase, "@BlockedApps");
+            
+                JSONArray arr = new JSONArray(JSONPackages);
+                for(int i = 0; i < arr.length(); i++){
+                    listPackages.add(arr.getString(i));
+                }
+                for (String packages : listPackages) {
+                    Log.d("ReactNativeBleManager", packages);
+
+                }
+            }
+            catch (Exception ex) {
+
+            }
+          
+
+      }
+
+
       String currentPackage = "br.com.voeazul";
       //BlockAppsModule.blockApp(currentPackage);
       Context reactContext = this;
+      if (listPackages.size() == 0) {
+          return 0;
+      }
+      if(!Settings.canDrawOverlays(this)){
+          return 0;
+      }
       if (BlockAppsModule.getUsageStatsList(this).isEmpty()){
         return 0;
       }
@@ -76,22 +115,25 @@ public class TaskService extends Service {
 
                 ActivityManager am = (ActivityManager)
                         getSystemService(reactContext.ACTIVITY_SERVICE);
-                am.killBackgroundProcesses(currentPackage);
+
+                for (String el : listPackages) {
+                    am.killBackgroundProcesses(el);
+                }
                 
                 PackageManager pm = getPackageManager();
                 if (pm.getLaunchIntentForPackage(packageName) != null
                         && powerManager.isInteractive()
                         && !packageName.equals(reactContext.getPackageName())) {
-
-                    if (packageName.equals(currentPackage)) {
-                        
-                        Uri uri = Uri.parse("app://domus/shared/");
-                        Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
-                        likeIng.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        likeIng.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                         
-                        startActivity(likeIng);
-
+                    for (String el : listPackages) {
+                        if (packageName.equals(el)) {
+                            
+                            Uri uri = Uri.parse("app://domus/shared/");
+                            Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
+                            likeIng.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            likeIng.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            
+                            startActivity(likeIng);
+                        }
                     }
                 }
             }
